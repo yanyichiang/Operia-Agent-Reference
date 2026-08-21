@@ -2,7 +2,7 @@
 
 A sanitized, stable-architecture snapshot of the private **Operia Agent** project.
 
-> **Status:** Private preview. We will switch this repository to public only after the privacy review in [`PRIVACY_REVIEW.md`](./PRIVACY_REVIEW.md) is complete.
+> **Status:** Public architecture reference. Maintained as a sanitized mirror of the private upstream; see the contributing note below.
 
 ## What this is
 
@@ -44,8 +44,6 @@ The following are intentionally left in the private upstream repository:
 - Real `wrangler*.toml` deployment configs, secrets, and environment templates (a fully sanitized `wrangler.example.toml` is included instead).
 - Operational runbooks, incident write-ups, archived docs, and product planning docs that may contain personal or infrastructure-sensitive details.
 - Experimental feature branches and unmerged work.
-
-See [`PRIVACY_REVIEW.md`](./PRIVACY_REVIEW.md) for the exact checklist and remaining review items before this repo can be made public.
 
 ## License
 
