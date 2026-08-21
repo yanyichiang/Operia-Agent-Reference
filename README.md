@@ -50,7 +50,8 @@ See [`PRIVACY_REVIEW.md`](./PRIVACY_REVIEW.md) for the exact checklist and remai
 ## License
 
 This repository is a mixed-origin reference snapshot. The upstream foundation is
-MIT-licensed (see [`LICENSE`](./LICENSE)); the Operia contributions are licensed
+licensed under the GNU Affero General Public License v3.0 (see
+[`LICENSE`](./LICENSE)); the Operia contributions are licensed
 under the PolyForm Noncommercial License 1.0.0 (see
 [`LICENSE-OPERIA`](./LICENSE-OPERIA)) — free to use, study, and share for
 noncommercial purposes with attribution; commercial use requires a separate

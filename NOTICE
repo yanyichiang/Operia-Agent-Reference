@@ -1,13 +1,16 @@
 Operia Agent Reference — License and Provenance Notice
 
 This repository is a public architecture reference derived from a private
-engineering origin. Everything included here is distributed under the MIT
-License; the sections below document provenance and what was deliberately
-left out.
+engineering origin. It is licensed in two layers: the upstream Aelios
+foundation under the GNU Affero General Public License v3.0, and the Operia
+contributions under the PolyForm Noncommercial License 1.0.0. The sections
+below document provenance and what was deliberately left out.
 
-1. Upstream MIT portion
-   The original `Aelios` foundation remains under the MIT License reproduced in
-   `LICENSE`. The upstream copyright notice is:
+1. Upstream AGPL portion
+   The original `Aelios` foundation is distributed under the GNU Affero General
+   Public License v3.0 reproduced in `LICENSE`, per a licensing change made by
+   the upstream author on 2026-08-21 (previously MIT). The upstream copyright
+   notice is:
 
      Copyright (c) 2026 wusaki0723
 
@@ -29,7 +32,10 @@ left out.
    anyone may use, copy, modify, and redistribute them for noncommercial
    purposes, with attribution; commercial use requires a separate license from
    the copyright holder. The upstream Aelios foundation remains under its own
-   MIT License.
+   GNU Affero General Public License v3.0. Where an Operia contribution is a
+   derivative of upstream AGPL code, that contribution is additionally governed
+   by the AGPL; purely original Operia modules are covered solely by
+   `LICENSE-OPERIA`.
 
 3. Excluded third-party components
    The following components are intentionally excluded from this public
@@ -47,7 +53,8 @@ left out.
    - The copyright holder for Operia contributions is stated in section 2
      above; no placeholder substitution is required.
    - The Operia contributions are licensed under PolyForm Noncommercial 1.0.0
-     via `LICENSE-OPERIA`; the upstream foundation remains MIT via `LICENSE`.
+     via `LICENSE-OPERIA`; the upstream foundation remains GNU AGPL v3.0 via
+     `LICENSE`.
      To change either, update the corresponding file and this notice.
    - Secret scanning (pattern-based, tree and full history) was completed on
      2026-08-21 with zero findings. Re-run `gitleaks` / `trufflehog` after any
