@@ -1,0 +1,259 @@
+# Example Cloudflare Workers configuration for the Operia memory worker.
+# All account-specific values are placeholders: replace <YOUR_...> items
+# with your own before deploying.
+# Structure mirrors the production topology: D1 + R2 + Queues + Vectorize
+# + Service Bindings + Durable Objects (agents SDK) + AI Gateway.
+
+name = "<YOUR_WORKER_NAME>"
+main = "src/index.ts"
+compatibility_date = "2026-04-01"
+compatibility_flags = ["nodejs_compat"]
+keep_vars = true
+workers_dev = true
+
+[[rules]]
+type = "Text"
+globs = ["**/*.html"]
+fallthrough = true
+
+[[routes]]
+pattern = "memory.example.com/*"
+zone_name = "example.com"
+
+[observability]
+enabled = true
+head_sampling_rate = 1
+
+[observability.logs]
+enabled = true
+head_sampling_rate = 1
+persist = true
+invocation_logs = true
+
+[observability.traces]
+enabled = false
+persist = true
+head_sampling_rate = 1
+
+[triggers]
+# Cloudflare cron uses UTC. Night Review is independently gated at 20:00 UTC
+# (04:00 <YOUR_TIMEZONE>); daily maintenance remains at 20:10 UTC.
+crons = ["*/5 * * * *", "0 20 * * *", "10 20 * * *"]
+
+[ai]
+binding = "AI"
+
+[[worker_loaders]]
+binding = "LOADER"
+
+[[services]]
+binding = "AGENT_SERVICE"
+service = "<YOUR_AGENT_SERVICE>"
+
+[[durable_objects.bindings]]
+name = "OPERIA_THINK"
+class_name = "OperiaThinkHarness"
+
+[[migrations]]
+tag = "memory-think-v1"
+new_sqlite_classes = ["OperiaThinkHarness"]
+
+[vars]
+WORKER_ROLE = "memory"
+CLOUDFLARE_ACCOUNT_ID = "<YOUR_CLOUDFLARE_ACCOUNT_ID>"
+AI_GATEWAY_BASE_URL = "https://gateway.ai.cloudflare.com/v1/<YOUR_CLOUDFLARE_ACCOUNT_ID>/default"
+# Visible model knobs. These are intentionally in wrangler.toml so they show
+# up in Cloudflare Variables and can be changed without touching code.
+PUBLIC_MODEL_NAME = "companion"
+CHAT_MODEL = "anthropic/claude-opus-4.6"
+TG_MEMORY_OUTCOME_V2_ENABLED = "true"
+MEMORY_PUBLICATION_STATE_V2_ENABLED = "true"
+MEMORY_RECALL_SHARED_DEADLINE_ENABLED = "true"
+MEMORY_THINK_CANARY_ENABLED = "true"
+MEMORY_THINK_EXECUTION_ENABLED = "true"
+MEMORY_THINK_TOOL_LOOP_ENABLED = "true"
+MEMORY_THINK_CODEMODE_ENABLED = "true"
+MEMORY_THINK_CODEMODE_V2_ENABLED = "true"
+MEMORY_THINK_SDK_CODEMODE_ENABLED = "false"
+MEMORY_THINK_ACTIONS_ENABLED = "true"
+MEMORY_THINK_SDK_CODEMODE_ACTIONS_ENABLED = "false"
+MEMORY_THINK_SHADOW_ENABLED = "true"
+MEMORY_THINK_APPROVAL_CONTINUATION_ENABLED = "false"
+MEMORY_THINK_APPROVAL_PROBE_ENABLED = "true"
+MEMORY_THINK_AUTHORITY_ENVELOPE_REQUIRED = "false"
+MEMORY_THINK_PROGRESSIVE_SKILLS_ENABLED = "true"
+MEMORY_THINK_CODE_READ_ENABLED = "true"
+# Visible pre-final drafts are intentionally disabled. A provider may emit
+# intermediate work as ordinary text rather than a typed reasoning part, so
+# sendReasoning=false alone is not a sufficient disclosure boundary.
+MEMORY_THINK_TG_DRAFT_ENABLED = "false"
+MEMORY_THINK_TG_PARAGRAPH_ENABLED = "true"
+# Cache V3 is deployed as an Owner-only production canary. Every mechanism has
+# an independent rollback flag; local prune remains an emergency valve off by default.
+MEMORY_THINK_CACHE_V3_OBSERVE_ENABLED = "true"
+MEMORY_THINK_STEP_TELEMETRY_ENABLED = "true"
+MEMORY_THINK_CACHE_V3_MODE = "anchored_v3"
+# Used only by the retained automatic_v3 experiment. Anchored V3 uses the
+# canonical ANTHROPIC_CACHE_STABLE_TTL / ANTHROPIC_CACHE_CONVERSATION_TTL pair.
+MEMORY_THINK_CACHE_V3_TTL = "1h"
+MEMORY_THINK_CACHE_V3_COHORT_PERCENT = "100"
+MEMORY_THINK_CONTEXT_EDIT_ENABLED = "true"
+MEMORY_THINK_CONTEXT_EDIT_TRIGGER_INPUT_TOKENS = "32000"
+MEMORY_THINK_CONTEXT_EDIT_KEEP_TOOL_USES = "3"
+MEMORY_THINK_CONTEXT_EDIT_CLEAR_AT_LEAST_TOKENS = "8000"
+MEMORY_THINK_LOCAL_PRUNE_ENABLED = "false"
+MEMORY_THINK_LOCAL_PRUNE_TRIGGER_INPUT_TOKENS = "64000"
+MEMORY_THINK_CODE_INSPECT_ENABLED = "true"
+MEMORY_THINK_CODE_INSPECT_TERMINAL_ENABLED = "true"
+MEMORY_FILTER_MAX_CANDIDATES = "20"
+MEMORY_FILTER_MAX_OUTPUT = "6"
+MEMORY_FILTER_MAX_CONTENT_CHARS = "700"
+# Recall floor on the raw embedding score, applied BEFORE the reranker. Low on
+# purpose: embeddinggemma under-scores reworded-but-relevant hits (~0.15-0.20).
+# Precision is handled by the reranker downstream.
+MEMORY_FILTER_MIN_SCORE = "0.1"
+MEMORY_RECALL_TIMEOUT_MS = "3500"
+MEMORY_RECALL_MAX_ITEM_BYTES = "3000"
+MEMORY_RECALL_MAX_TOTAL_BYTES = "12000"
+MEMORY_RECALL_SEMANTIC_SLOTS = "3"
+# vNext state alignment is observation-only. The harness writes deterministic
+# artifacts after ordinary recall; none of the rendered packet enters Assembler.
+MEMORY_STATE_PROJECTION_SHADOW_ENABLED = "true"
+MEMORY_REVISION_EXPANSION_SHADOW_ENABLED = "true"
+MEMORY_STATE_PACKET_SHADOW_ENABLED = "true"
+MEMORY_STATE_PACKET_INJECT_ENABLED = "false"
+MEMORY_VNEXT_ORDINARY_FACT_WRITE_ENABLED = "true"
+# Memory vNext.2 Owner-private production canary. New writes and all read-side
+# artifacts are live in shadow; legacy injection remains authoritative until
+# the Owner QA corpus proves the vNext carrier has complete evidence coverage.
+MEMORY_EVIDENCE_UNIT_V2_WRITE_ENABLED = "true"
+MEMORY_CLAIM_ATOM_V2_WRITE_ENABLED = "true"
+MEMORY_MUTATION_V2_SHADOW_ENABLED = "false"
+MEMORY_MUTATION_V2_COMMIT_ENABLED = "false"
+MEMORY_SUPPORT_RECOMPUTE_ENABLED = "false"
+MEMORY_GROK_PROPOSAL_SHADOW_ENABLED = "false"
+MEMORY_GROK_PROPOSAL_PRIMARY_ENABLED = "true"
+MEMORY_GROK_PROPOSAL_MODEL = "xai/grok-4.5"
+MEMORY_OCM_SHADOW_ENABLED = "true"
+MEMORY_NIGHT_REVIEW_ENABLED = "true"
+MEMORY_NIGHT_REVIEW_PROVIDER = "anthropic"
+MEMORY_NIGHT_REVIEW_MODEL = "anthropic/claude-opus-4.6"
+MEMORY_NIGHT_REVIEW_REASONING_EFFORT = "high"
+MEMORY_NIGHT_REVIEW_PROMPT_VERSION = "memory-night-review-blind-profile-v2.0.0"
+MEMORY_NIGHT_REVIEW_SCHEMA_VERSION = "memory-night-review-verdict-v2.0.0"
+MEMORY_NIGHT_REVIEW_MAX_CASES = "8"
+MEMORY_NIGHT_REVIEW_MAX_TOKENS = "2600"
+MEMORY_DYNAMIC_NEED_SHADOW_ENABLED = "true"
+MEMORY_DYNAMIC_NEED_ENFORCE_ENABLED = "false"
+MEMORY_VNEXT_READ_SHADOW_ENABLED = "true"
+MEMORY_MB1_SHADOW_ENABLED = "true"
+MEMORY_MB1_INJECT_ENABLED = "false"
+MEMORY_VISIBLE_CONTEXT_LEDGER_ENABLED = "true"
+MEMORY_COUNTERFACTUAL_REPLAY_ENABLED = "false"
+MEMORY_STATE_OWNER_TIME_ZONE = "<YOUR_TIMEZONE>"
+MEMORY_EPISODIC_WRITE_ENABLED = "true"
+MEMORY_EPISODIC_READ_ENABLED = "true"
+MEMORY_EPISODIC_INJECT_ENABLED = "true"
+MEMORY_SUBJECT_CORE_ENABLED = "true"
+MEMORY_SUBJECT_PROPOSALS_ENABLED = "true"
+DREAM_MODEL = "deepseek/deepseek-v4-pro"
+CANDIDATE_JUDGE_ENABLED = "true"
+JUDGE_MODEL = "deepseek/deepseek-v4-pro"
+JUDGE_MAX_CANDIDATES = "200"
+JUDGE_BATCH_SIZE = "5"
+JUDGE_APPROVE_MIN = "0.8"
+JUDGE_DISCARD_MAX = "0.3"
+CONVERSATION_SUMMARY_MODEL = "deepseek/deepseek-v4-pro"
+CONVERSATION_SUMMARY_RETRY_COOLDOWN_SECONDS = "900"
+CONVERSATION_FOLD_TRIGGER_TURNS = "24"
+CONVERSATION_RECENT_KEEP_TURNS = "10"
+# Historical import recall is independently gated and remains off until Gate F.
+CONVERSATION_IMPORT_ENABLED = "false"
+CONVERSATION_IMPORT_COMMIT_ENABLED = "false"
+CONVERSATION_IMPORT_RECALL_ENABLED = "false"
+CONVERSATION_FRESHNESS_V2_ENABLED = "true"
+IMPORTED_SUMMARY_RECENCY_ENABLED = "true"
+# Paid historical-summary derivation. Enable only for a bounded owner-authorized run.
+CONVERSATION_IMPORT_SUMMARY_ENABLED = "false"
+CONVERSATION_IMPORT_SUMMARY_MODEL = "anthropic/claude-opus-4.6"
+# Long-history Workers AI lane. `off` is a hard zero-access pause.
+CONVERSATION_IMPORT_FREE_SUMMARY_MODE = "off"
+CONVERSATION_IMPORT_FREE_SUMMARY_MODEL = "@cf/mistralai/mistral-small-3.1-24b-instruct"
+CONVERSATION_IMPORT_FREE_SUMMARY_DAILY_NEURONS = "2000"
+CONVERSATION_IMPORT_FREE_SUMMARY_BATCH_ID = ""
+CONVERSATION_IMPORT_FREE_SUMMARY_NAMESPACE = "default"
+# Privileged CLI archive path. Requires a separately configured secret bearer and private R2 binding.
+CONVERSATION_IMPORT_PRIVILEGED_INGEST_ENABLED = "false"
+CONVERSATION_IMPORT_INGEST_NAMESPACE = "default"
+DEDUP_COSINE = "0.9"
+VISION_MODEL = "google-ai-studio/gemini-3-flash-preview"
+# Vector recall floor (see MEMORY_FILTER_MIN_SCORE note above). Precision is
+# handled by the reranker + compressor, so keep this as a garbage gate only.
+MEMORY_MIN_SCORE = "0.1"
+MEMORY_TOP_K = "50"
+# Soft same-session ordering factor. Eligibility uses the pre-decay score.
+MEMORY_INJECT_DECAY_FACTOR = "0.85"
+MEMORY_RERANKER_MODEL = "workers-ai/@cf/baai/bge-reranker-base"
+VECTORIZE_INDEX_NAME = "<YOUR_VECTORIZE_INDEX>"
+EMBEDDING_MODEL = "workers-ai/@cf/google/embeddinggemma-300m"
+EMBEDDING_DIMENSIONS = "768"
+DREAM_TIME_ZONE = "<YOUR_TIMEZONE>"
+DREAM_MAX_MESSAGES = "40"
+DREAM_MEMORY_CONTEXT_LIMIT = "40"
+DREAM_MAX_RUNS = "10"
+DREAM_MAX_TOKENS = "4000"
+ANTHROPIC_THINKING_ENABLED = "false"
+ANTHROPIC_THINKING_BUDGET = "1024"
+CONTROL_REASONING_OWNER_ENABLED = "true"
+ANTHROPIC_CACHE_ENABLED = "true"
+ANTHROPIC_AUTO_CACHE_ENABLED = "false"
+ANTHROPIC_ROLLING_CACHE_ENABLED = "true"
+ANTHROPIC_CACHE_TTL = "5m"
+ANTHROPIC_CACHE_STABLE_TTL = "1h"
+ANTHROPIC_CACHE_CONVERSATION_TTL = "1h"
+ANTHROPIC_TRANSPORT_DEFAULT = "gateway"
+# For custom Anthropic-compatible providers whose base_url already ends in /v1,
+# keep this as "messages". If the base_url is only the root domain, use
+# "v1/messages".
+CUSTOM_ANTHROPIC_MESSAGES_PATH = "messages"
+
+# GitHub daily archive pull. Leave GITHUB_DAILY_REPO empty to disable.
+GITHUB_DAILY_REPO = ""
+GITHUB_DAILY_PATH = "archive/daily"
+
+# Private/account-specific variables live in the Cloudflare Dashboard:
+# AI_GATEWAY_BASE_URL, CHATBOX_API_KEY, MEMORY_MCP_API_KEY,
+# RIDDLE_CHAT_API_KEY, GUIDE_DOG_API_KEY, CF_AIG_TOKEN, AGENT_GATEWAY_BROKER_API_KEY.
+# D1 binding is auto-filled by `npm run setup:cloudflare`.
+
+[[vectorize]]
+binding = "VECTORIZE"
+index_name = "<YOUR_VECTORIZE_INDEX>"
+
+[[queues.producers]]
+binding = "MEMORY_QUEUE"
+queue = "<YOUR_MEMORY_QUEUE>"
+
+[[queues.producers]]
+binding = "TG_QUEUE"
+queue = "<YOUR_TG_QUEUE>"
+
+[[queues.producers]]
+binding = "TG_ROOM_QUEUE"
+queue = "<YOUR_ROOM_QUEUE>"
+
+[[queues.consumers]]
+queue = "<YOUR_MEMORY_QUEUE>"
+max_batch_size = 1
+max_batch_timeout = 0
+max_retries = 3
+dead_letter_queue = "<YOUR_DLQ>"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "<YOUR_D1_DATABASE>"
+database_id = "<YOUR_D1_DATABASE_ID>"
+
+[[r2_buckets]]
+binding = "MEMORY_ARCHIVE"
+bucket_name = "<YOUR_MEMORY_ARCHIVE_BUCKET>"

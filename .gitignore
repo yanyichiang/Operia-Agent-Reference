@@ -1,0 +1,15 @@
+node_modules/
+.wrangler/
+.dev.vars
+.env
+.wrangler-secrets.json
+config/ai-gateway-spend-limits.json
+backups/
+dist/
+.superpowers/
+.worktrees/
+
+# build-process analysis files
+.analysis-cache.md
+.analysis-archive/
+.source-snapshot/

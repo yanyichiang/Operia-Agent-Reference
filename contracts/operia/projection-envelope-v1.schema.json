@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://operia.example/contracts/projection-envelope-v1.schema.json",
+  "title": "Operia ProjectionEnvelope v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "ownerDomain", "sourceVersion", "revision", "observedAt", "staleAfter", "freshness", "status", "data", "links"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "ownerDomain": { "type": "string", "minLength": 1 },
+    "sourceVersion": { "type": "string", "minLength": 1 },
+    "revision": { "oneOf": [{ "type": "integer", "minimum": 0 }, { "type": "string", "minLength": 1 }] },
+    "observedAt": { "type": "string", "format": "date-time" },
+    "staleAfter": { "type": "string", "format": "date-time" },
+    "freshness": { "enum": ["fresh", "stale", "missing"] },
+    "status": { "enum": ["Healthy", "Degraded", "ActionRequired", "Offline", "Disabled", "Planned"] },
+    "data": {},
+    "links": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "canonical": { "type": "string", "format": "uri" },
+        "object": { "type": "string", "format": "uri" },
+        "approval": { "type": "string", "format": "uri" }
+      }
+    }
+  }
+}

@@ -1,0 +1,51 @@
+Operia Agent Reference — License and Provenance Notice
+
+This repository is a public architecture reference derived from a private
+engineering origin. Everything included here is distributed under the MIT
+License; the sections below document provenance and what was deliberately
+left out.
+
+1. Upstream MIT portion
+   The original `Aelios` foundation remains under the MIT License reproduced in
+   `LICENSE`. The upstream copyright notice is:
+
+     Copyright (c) 2026 wusaki0723
+
+   Files that are direct descendants of the upstream Aelios codebase should keep
+   that attribution. See the private origin repository for exact provenance if
+   needed.
+
+2. Operia contributions
+   All subsequent design, architecture, and implementation work that introduces
+   the Operia Agent system — including but not limited to the Memory vNext
+   subsystem, publication lifecycle, Telegram reliability layer, sandbox
+   autonomy, health/calendar integration contracts, and white-box memory design —
+   was developed separately from the upstream Aelios foundation.
+
+   Copyright for those Operia contributions: yanyichiang.
+
+   The Operia contributions in this reference repository are made available
+   under the same MIT License as the upstream foundation for the purpose of
+   architecture reference and collaboration, unless the owner later specifies a
+   different license in a dedicated `LICENSE-OPERIA` file.
+
+3. Excluded third-party components
+   The following components are intentionally excluded from this public
+   reference because they are either private, non-commercial, or third-party
+   code that does not belong in a public release:
+
+   - `src/tg/private/dwell` and any vendored Dwell-derived Mini App source,
+     which is under a PolyForm Noncommercial 1.0.0 license and was explicitly
+     marked as a private noncommercial UI source snapshot.
+   - Apple Health, Google Calendar, and Note service source code and migrations,
+     which contain owner-private data domains.
+   - All deployment configs, secrets, and environment templates.
+
+4. Release status
+   - The copyright holder for Operia contributions is stated in section 2
+     above; no placeholder substitution is required.
+   - If you ever want the Operia contributions under a license other than MIT,
+     add a `LICENSE-OPERIA` file and update this notice.
+   - Secret scanning (pattern-based, tree and full history) was completed on
+     2026-08-21 with zero findings. Re-run `gitleaks` / `trufflehog` after any
+     future sync from the private origin.

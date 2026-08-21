@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://operia.example/contracts/note-item-v1.schema.json",
+  "title": "Operia Note item v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "kind", "markdown", "title", "todoState", "dueAt", "position", "completedFromPosition", "status", "revision", "actor", "sourceSurface", "authorizedBy", "createdAt", "updatedAt", "deletedAt", "purgeAfter"],
+  "properties": {
+    "id": { "type": "string", "minLength": 1 },
+    "kind": { "enum": ["memo", "todo"] },
+    "markdown": { "type": "string", "maxLength": 204800 },
+    "title": { "type": "string", "maxLength": 240 },
+    "todoState": { "oneOf": [{ "enum": ["open", "completed"] }, { "type": "null" }] },
+    "dueAt": { "oneOf": [{ "type": "string", "format": "date-time" }, { "type": "null" }] },
+    "position": { "oneOf": [{ "type": "integer" }, { "type": "null" }] },
+    "completedFromPosition": { "oneOf": [{ "type": "integer" }, { "type": "null" }] },
+    "status": { "enum": ["active", "deleted"] },
+    "revision": { "type": "integer", "minimum": 1 },
+    "actor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "id"],
+      "properties": { "kind": { "type": "string" }, "id": { "type": "string" } }
+    },
+    "sourceSurface": { "type": "string" },
+    "authorizedBy": { "oneOf": [{ "type": "string" }, { "type": "null" }] },
+    "createdAt": { "type": "string", "format": "date-time" },
+    "updatedAt": { "type": "string", "format": "date-time" },
+    "deletedAt": { "oneOf": [{ "type": "string", "format": "date-time" }, { "type": "null" }] },
+    "purgeAfter": { "oneOf": [{ "type": "string", "format": "date-time" }, { "type": "null" }] }
+  }
+}

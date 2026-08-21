@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://operia.example/contracts/action-contract-v1.schema.json",
+  "title": "Operia ActionContract v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "actionId", "idempotencyKey", "ownerId", "ownerDomain", "actor", "requester", "authorizedBy", "sourceSurface", "target", "operation", "expectedRevision", "rootTaskId", "parentTaskId", "requestedAt"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "actionId": { "$ref": "#/$defs/id" },
+    "idempotencyKey": { "$ref": "#/$defs/id" },
+    "ownerId": { "$ref": "#/$defs/id" },
+    "ownerDomain": { "type": "string", "minLength": 1, "maxLength": 253 },
+    "actor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "id"],
+      "properties": {
+        "kind": { "enum": ["owner", "operia", "codex", "service"] },
+        "id": { "$ref": "#/$defs/id" }
+      }
+    },
+    "requester": { "$ref": "#/$defs/id" },
+    "authorizedBy": { "oneOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] },
+    "sourceSurface": { "enum": ["telegram", "miniapp", "agent-console", "operia-cli"] },
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "id"],
+      "properties": { "type": { "$ref": "#/$defs/id" }, "id": { "$ref": "#/$defs/id" } }
+    },
+    "operation": { "$ref": "#/$defs/id" },
+    "expectedRevision": { "oneOf": [{ "type": "integer", "minimum": 1 }, { "type": "null" }] },
+    "rootTaskId": { "oneOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] },
+    "parentTaskId": { "oneOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] },
+    "requestedAt": { "type": "string", "format": "date-time" }
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,199}$" }
+  }
+}
