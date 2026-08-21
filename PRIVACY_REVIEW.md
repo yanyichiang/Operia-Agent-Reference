@@ -56,7 +56,7 @@ Resolved in the release-gate round: operational/production/QA/incident spec docu
 Verified on 2026-08-21: no Dwell-derived files or snippets remain (`dwell` / `polyform` scans over source return zero hits). The vendored directory was excluded at export time.
 
 ### 6. License scope
-Satisfied by the root `NOTICE`: it separates the upstream MIT foundation from Operia contributions and lists excluded components. Everything included in this repository is MIT.
+Satisfied by the root `NOTICE`: it separates the upstream MIT foundation from Operia contributions and lists excluded components. The upstream foundation is MIT (`LICENSE`); the Operia contributions are PolyForm Noncommercial 1.0.0 (`LICENSE-OPERIA`).
 
 ## Recommended final checks
 
@@ -89,4 +89,5 @@ grep -R -i 'dwell\|polyform' .
 | 2026-08-21 | Clean export created; literal identifiers and infrastructure names redacted | Kiri |
 | 2026-08-21 | Ox review round: replaced hardcoded production Telegram bot usernames with `<OWNER_BOT_USERNAME>` / `<CODEX_BOT_USERNAME>` placeholders (5 sites); rewrote session-protocol and archive-source rows to remove real domain/vendor names from this file; renamed placeholder class `<AgentRuntime>` back to valid identifier `OperiaAgentRuntime` (6 sites); migrated sanitized `src/types.ts` and `src/controlRegistry.ts` (all `*.example.com` domains); added sanitized `wrangler.example.toml` with placeholder account/database IDs | Ox |
 | 2026-08-21 | Ox release-gate round (per external review): removed 14 operational/production/QA/incident spec docs and the entire `plans/` directory; redacted home-infrastructure vocabulary (build-server hostname, household device names) from remaining design docs; generalized residual note-vault references; replaced local bridge tool name with `<LOCAL_CODEX_BRIDGE>`; rewrote bearer-key auth to constant-time table-driven comparison via `secretEqual`; added explicit not-a-starter-template contract to README | Ox |
+| 2026-08-21 | Licensing change: Operia contributions layer relicensed from MIT to PolyForm Noncommercial 1.0.0 via new `LICENSE-OPERIA` (noncommercial use with attribution; commercial use requires separate license). Upstream Aelios foundation remains MIT, unchanged. NOTICE / README / this review updated accordingly | Ox |
 | | | |

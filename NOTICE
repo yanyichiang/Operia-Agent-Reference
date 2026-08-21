@@ -25,9 +25,11 @@ left out.
    Copyright for those Operia contributions: yanyichiang.
 
    The Operia contributions in this reference repository are made available
-   under the same MIT License as the upstream foundation for the purpose of
-   architecture reference and collaboration, unless the owner later specifies a
-   different license in a dedicated `LICENSE-OPERIA` file.
+   under the PolyForm Noncommercial License 1.0.0 (see `LICENSE-OPERIA`):
+   anyone may use, copy, modify, and redistribute them for noncommercial
+   purposes, with attribution; commercial use requires a separate license from
+   the copyright holder. The upstream Aelios foundation remains under its own
+   MIT License.
 
 3. Excluded third-party components
    The following components are intentionally excluded from this public
@@ -44,8 +46,9 @@ left out.
 4. Release status
    - The copyright holder for Operia contributions is stated in section 2
      above; no placeholder substitution is required.
-   - If you ever want the Operia contributions under a license other than MIT,
-     add a `LICENSE-OPERIA` file and update this notice.
+   - The Operia contributions are licensed under PolyForm Noncommercial 1.0.0
+     via `LICENSE-OPERIA`; the upstream foundation remains MIT via `LICENSE`.
+     To change either, update the corresponding file and this notice.
    - Secret scanning (pattern-based, tree and full history) was completed on
      2026-08-21 with zero findings. Re-run `gitleaks` / `trufflehog` after any
      future sync from the private origin.
